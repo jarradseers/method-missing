@@ -1,0 +1,33 @@
+{
+  "name": "method-missing",
+  "version": "1.0.0",
+  "engines" : {
+    "node" : ">=6.0.0"
+  },
+  "engineStrict": true,
+  "description": "Method Missing class for es6+",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jarradseers/method-missing.git"
+  },
+  "keywords": [
+    "method-missing",
+    "method",
+    "missing",
+    "__call",
+    "proxy"
+  ],
+  "author": "Jarrad Seers <jarrad@seers.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jarradseers/method-missing/issues"
+  },
+  "homepage": "https://github.com/jarradseers/method-missing#readme"
+}
