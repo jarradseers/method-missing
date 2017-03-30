@@ -1,6 +1,6 @@
 {
   "name": "method-missing",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -11,7 +11,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "eslint ./lib/*.js && node test"
+    "test": "eslint . && node test"
   },
   "repository": {
     "type": "git",
@@ -31,8 +31,6 @@
   },
   "homepage": "https://github.com/jarradseers/method-missing#readme",
   "devDependencies": {
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.2",
-    "eslint-plugin-import": "^2.2.0"
+    "eslint": "^3.18.0"
   }
 }
