@@ -6,6 +6,8 @@
 
   Method missing also works with singletons and other objects, please see the examples below.
 
+  MethodMissing is packaged with the [extends-classes project](https://www.npmjs.com/package/extends-classes) allowing for the extension of multiple classes.
+
 ## Usage
 
 Include the MethodMissing class:
