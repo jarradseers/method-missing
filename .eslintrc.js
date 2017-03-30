@@ -26,7 +26,7 @@ module.exports = {
             "error",
             "always"
         ],
-        "class-methods-use-this": "error",
+        "class-methods-use-this": "off",
         "comma-dangle": "off",
         "comma-spacing": [
             "error",
