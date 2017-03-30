@@ -6,21 +6,16 @@
  * @created 29/03/2017 NZDT
  */
 
-// TODO : Write some real unit tests ;)
-
-'use strict';
-
 const MethodMissing = require('../');
 
 class Simple extends MethodMissing {
-  constructor() {
-    super();
-  }
   iExist(str) {
     console.log(`I do exist ${str}.`);
+    return this;
   }
   __call(name, args) {
     console.log(`The method '${name}' was called with:`, args);
+    return this;
   }
   static __call(name, args) {
     console.log(`The method '${name}' was called with:`, args);
@@ -45,6 +40,7 @@ class Test extends MethodMissing {
   }
   missing(name, args) {
     console.log(`The method '${name}' was called with:`, args);
+    return this;
   }
   static missing(name, args) {
     console.log(`The method '${name}' was called with:`, args);
@@ -62,11 +58,9 @@ test.nonExistentStatic('world');
 // The method 'nonExistentStatic' was called with: { '0': 'world' }
 
 class RealSimple extends MethodMissing {
-  constructor() {
-    super();
-  }
   __call(name, [...args]) {
     console.log(`The method '${name}' was called with:`, args);
+    return this;
   }
 }
 
@@ -74,11 +68,9 @@ new RealSimple().nonExistent('Hello!');
 // The method 'nonExistent' was called with: { '0': 'Hello!' }
 
 class Args extends MethodMissing {
-  constructor() {
-    super();
-  }
   __call(name, [...args]) {
     console.log(`The method '${name}' was called with:`, args);
+    return this;
   }
 }
 
@@ -86,10 +78,10 @@ new Args().say('hello', 'world!');
 // The method 'say' was called with: [ 'hello', 'world!' ]
 
 const object = MethodMissing.static({
-  one: function() {
+  one () {
     console.log('hey there');
-  }
-}, (name, args) => {
+  },
+}, (name) => {
   console.log(`Sorry, method '${name}' doesn't exist.`);
 });
 

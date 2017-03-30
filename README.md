@@ -21,10 +21,6 @@ Standard inheritance example:
 ```js
 class Simple extends MethodMissing {
 
-  constructor() {
-    super();
-  }
-
   __call(name, args) {
     console.log(`The method '${name}' was called with:`, args);
   }
@@ -33,7 +29,7 @@ class Simple extends MethodMissing {
 
 const simple = new Simple();
 simple.nonExistent('Hello!');
-// The method 'nonExistent' was called with: { '0': 'Hello!' }
+// The method 'nonExistent' was called with: [ 'Hello!' ]
 ```
 
 Static only example:
@@ -48,18 +44,16 @@ class Simple {
 }
 
 Simple = MethodMissing.static(Simple);
+
+// Call the static method.
 Simple.nonExistentStatic(1, 2, 3);
-// The method 'nonExistentStatic' was called with: {0: 1, 1: 2, 2: 3}
+// The method 'nonExistentStatic' was called with: [ 1, 2, 3 ]
 ```
 
 Complete example:
 
 ```js
 class Simple extends MethodMissing {
-
-  constructor() {
-    super();
-  }
 
   iExist(str) {
     console.log(`I do exist ${str}.`);
@@ -82,9 +76,9 @@ const simple = new Simple();
 simple.nonExistent('hello');
 simple.iExist('world');
 Simple.nonExistentStatic('hey');
-// The method 'nonExistent' was called with: { '0': 'hello' }
+// The method 'nonExistent' was called with: [ 'hello' ]
 // I do exist world.
-// The method 'nonExistentStatic' was called with: { '0': 'hey' }
+// The method 'nonExistentStatic' was called with: [ 'hey' ]
 ```
 Used on an object:
 
@@ -94,14 +88,14 @@ const object = MethodMissing.static({
     console.log('hey there');
   }
 }, (name, args) => {
-  console.log(`Sorry, method '${name}' doesn't exist.`);
+  console.log(`Sorry, method '${name}' doesn't exist.`, args);
 });
 
 object.one();
 object.two();
 
 // hey there
-// Sorry, method 'two' doesn't exist.
+// Sorry, method 'two' doesn't exist. []
 ```
 
 Check out the [test folder](test) for more!
@@ -122,7 +116,7 @@ $ npm install method-missing
 
 ## Options
 
-Changing the `__call` method
+Changing the `__call` method (if you must, just be careful with this).
 
 ```js
 class Test extends MethodMissing {
@@ -147,28 +141,8 @@ const test = new Test();
 
 test.nonExistent('hello');
 test.nonExistentStatic('world');
-// The method 'nonExistentStatic' was called with: { '0': 'hey' }
-// The method 'nonExistent' was called with: { '0': 'hello' }
-// The method 'nonExistentStatic' was called with: { '0': 'world' }
-```
-
-Modifying the arguments to be an array:
-
-```js
-class Args extends MethodMissing {
-
-  constructor() {
-    super();
-  }
-
-  __call(name, [...args]) {
-    console.log(`The method '${name}' was called with:`, args);
-  }
-
-}
-
-new Args().say('hello', 'world!');
-// The method 'say' was called with: [ 'hello', 'world!' ]
+// The method 'nonExistent' was called with: [ 'hello' ]
+// The method 'nonExistentStatic' was called with: [ 'world' ]
 ```
 
 ## Tests

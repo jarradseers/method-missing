@@ -1,8 +1,8 @@
 {
   "name": "method-missing",
   "version": "1.1.4",
-  "engines" : {
-    "node" : ">=6.0.0"
+  "engines": {
+    "node": ">=6.0.0"
   },
   "engineStrict": true,
   "description": "Method Missing class for es6+",
@@ -11,7 +11,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node test"
+    "test": "eslint ./lib/*.js && node test"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,10 @@
   "bugs": {
     "url": "https://github.com/jarradseers/method-missing/issues"
   },
-  "homepage": "https://github.com/jarradseers/method-missing#readme"
+  "homepage": "https://github.com/jarradseers/method-missing#readme",
+  "devDependencies": {
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.2",
+    "eslint-plugin-import": "^2.2.0"
+  }
 }
