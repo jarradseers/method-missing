@@ -95,3 +95,33 @@ const object = MethodMissing.static({
 
 object.one();
 object.two();
+
+const classes = require('../../extends-classes');
+
+class A {
+  constructor() {
+    console.log("A has been initialised");
+  }
+  one() {
+    console.log('One called');
+  }
+};
+
+class B {};
+class C {};
+
+class T extends classes (A, B, C, MethodMissing) {
+  constructor() {
+    super();
+  }
+  __call(name, args) {
+    console.log(`Couldn't find ${name}`);
+  }
+}
+
+var t = new T();
+t.one();
+t.goneburgers();
+
+// One called
+// Couldn't find goneburgers
