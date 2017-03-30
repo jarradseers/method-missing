@@ -111,6 +111,7 @@ const MethodMissing = require('method-missing');
 class Test extends classes (A, B, C, MethodMissing) {
 }
 ```
+Check out [extends-classes npm package](https://www.npmjs.com/package/extends-classes) to extend multiple classes!
 
 Check out the [test folder](test) for more!
 
