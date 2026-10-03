@@ -1,104 +1,13 @@
-# Method Missing Class
+# Method Missing
 
-  The method missing handler class is simple to use, simply extend it from your es6 class (or base class) and you are able to handle the missing methods.
+[![CI](https://github.com/jarradseers/method-missing/actions/workflows/ci.yml/badge.svg)](https://github.com/jarradseers/method-missing/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/method-missing.svg)](https://www.npmjs.com/package/method-missing)
 
-  It defaults to using a method on your class `__call(name, args)` however you can chage this behaviour.
+Catch calls to methods that do not exist. Extend `MethodMissing` from your ES6 class (or base class), define `__call(name, args)`, and every call to a missing method is handed to it. Small, with no dependencies.
 
-  Method missing also works with singletons and other objects, please see the examples below.
+It also works for static methods and plain objects.
 
-  MethodMissing is used in the [extends-classes project](https://www.npmjs.com/package/extends-classes) allowing for the extension of multiple classes.
-
-## Usage
-
-Include the MethodMissing class:
-
-```js
-const MethodMissing = require('method-missing');
-```
-
-Standard inheritance example:
-
-```js
-class Simple extends MethodMissing {
-
-  __call(name, args) {
-    console.log(`The method '${name}' was called with:`, args);
-  }
-
-}
-
-const simple = new Simple();
-simple.nonExistent('Hello!');
-// The method 'nonExistent' was called with: [ 'Hello!' ]
-```
-
-Static only example:
-
-```js
-class Simple {
-
-  static __call(name, args) {
-    console.log(`The method '${name}' was called with:`, args);
-  }
-
-}
-
-Simple = MethodMissing.static(Simple);
-
-// Call the static method.
-Simple.nonExistentStatic(1, 2, 3);
-// The method 'nonExistentStatic' was called with: [ 1, 2, 3 ]
-```
-
-Complete example:
-
-```js
-class Simple extends MethodMissing {
-
-  iExist(str) {
-    console.log(`I do exist ${str}.`);
-  }
-
-  __call(name, args) {
-    console.log(`The method '${name}' was called with:`, args);
-  }
-
-  static __call(name, args) {
-    console.log(`The method '${name}' was called with:`, args);
-  }
-
-}
-
-Simple = MethodMissing.static(Simple);
-
-const simple = new Simple();
-
-simple.nonExistent('hello');
-simple.iExist('world');
-Simple.nonExistentStatic('hey');
-// The method 'nonExistent' was called with: [ 'hello' ]
-// I do exist world.
-// The method 'nonExistentStatic' was called with: [ 'hey' ]
-```
-Used on an object:
-
-```js
-const object = MethodMissing.static({
-  one: function() {
-    console.log('hey there');
-  }
-}, (name, args) => {
-  console.log(`Sorry, method '${name}' doesn't exist.`, args);
-});
-
-object.one();
-object.two();
-
-// hey there
-// Sorry, method 'two' doesn't exist. []
-```
-
-Check out the [test folder](test) for more!
+MethodMissing is used in [extends-classes](https://www.npmjs.com/package/extends-classes), which allows a class to extend several classes.
 
 ## Installation
 
@@ -106,17 +15,68 @@ Check out the [test folder](test) for more!
 $ npm install method-missing
 ```
 
-## Features
+## Usage
 
-  * Capture missing methods in your class.
-  * Simple, fast, light-weight with no external dependencies.
-  * Easy to use in existing projects (particularly if you already extend es6 classes from a base class).
-  * Written in ES6+ for node.js 6+.
-  * Clean solution to method missing.
+```js
+const MethodMissing = require('method-missing');
 
-## Options
+class Simple extends MethodMissing {
 
-Changing the `__call` method (if you must, just be careful with this).
+  __call(name, args) {
+    return `The method '${name}' was called with: ${args.join(', ')}`;
+  }
+
+}
+
+const simple = new Simple();
+
+simple.nonExistent('Hello!');
+// The method 'nonExistent' was called with: Hello!
+```
+
+`__call` receives the method name and an array of the arguments. Whatever it returns is returned to the caller, and `this` is the instance, so `return this` makes missing methods chainable.
+
+Methods, properties and getters that do exist behave as normal.
+
+### Static methods
+
+Wrap the class with `MethodMissing.static` and define a static `__call`:
+
+```js
+class Simple {
+
+  static __call(name, args) {
+    return `The method '${name}' was called with: ${args.join(', ')}`;
+  }
+
+}
+
+const Wrapped = MethodMissing.static(Simple);
+
+Wrapped.nonExistentStatic(1, 2, 3);
+// The method 'nonExistentStatic' was called with: 1, 2, 3
+```
+
+A class can do both: extend `MethodMissing` for its instances and be wrapped with `MethodMissing.static` for its static methods.
+
+### Objects
+
+Pass a handler function as the second argument:
+
+```js
+const object = MethodMissing.static({
+  one() {
+    return 'hey there';
+  }
+}, (name, args) => `Sorry, method '${name}' doesn't exist.`);
+
+object.one(); // hey there
+object.two(); // Sorry, method 'two' doesn't exist.
+```
+
+### Changing the handler name
+
+Pass the name to `super`, and to `MethodMissing.static` for static methods:
 
 ```js
 class Test extends MethodMissing {
@@ -126,33 +86,44 @@ class Test extends MethodMissing {
   }
 
   missing(name, args) {
-    console.log(`The method '${name}' was called with:`, args);
+    return `The method '${name}' was called with: ${args.join(', ')}`;
   }
 
   static missing(name, args) {
-    console.log(`The method '${name}' was called with:`, args);
+    return `The static method '${name}' was called with: ${args.join(', ')}`;
   }
 
 }
 
-Test = MethodMissing.static(Test, 'missing');
-
-const test = new Test();
-
-test.nonExistent('hello');
-test.nonExistentStatic('world');
-// The method 'nonExistent' was called with: [ 'hello' ]
-// The method 'nonExistentStatic' was called with: [ 'world' ]
+const Wrapped = MethodMissing.static(Test, 'missing');
 ```
+
+## What counts as missing
+
+Reading any property that does not exist on the object returns a function that calls your handler, so `typeof simple.anything` is `'function'`. Three kinds of lookup are left alone and return `undefined`, because the language makes them on every object:
+
+- `then`, so instances can be awaited, resolved by promises and returned from `async` functions.
+- `toJSON`, so instances can be passed to `JSON.stringify`.
+- Symbols, such as `Symbol.iterator`.
+
+Define any of these on your class and they work as usual.
+
+If there is no handler (no `__call` on the class), missing properties are `undefined`, the same as on any object.
+
+## Upgrading from 1.x
+
+- The value returned by the handler is now returned to the caller. In 1.x it was discarded.
+- `then`, `toJSON` and symbols are no longer handed to the handler. In 1.x this made `await instance` hang and `JSON.stringify(instance)` return `undefined`.
+- A class with no handler no longer throws `MethodMissingError` when a missing property is read; the property is `undefined`.
+- Getters now run with the instance, not the unwrapped object, as `this`.
 
 ## Tests
 
-  From the package 
-
-  ```bash
-  $ npm test
-  ```
+```bash
+$ npm install
+$ npm test
+```
 
 ## License
 
-  [MIT](LICENSE)
+[MIT](LICENSE)
